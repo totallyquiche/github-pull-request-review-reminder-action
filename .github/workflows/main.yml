@@ -4,6 +4,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      -uses: totallyquiche/github-pull-request-review-reminder-action
       - uses: actions/setup-node@v3
         with:
           node-version: 18
