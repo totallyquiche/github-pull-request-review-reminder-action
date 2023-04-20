@@ -1,8 +1,6 @@
 name: 'Pull Request Review Reminder Action'
 description: 'Notify reviewers of Pull Requests awaiting their review.'
-on:
-  schedule:
-    - cron:  '* * * * *'
+on: workflow_dispatch
 jobs:
   build:
     runs-on: ubuntu-latest
