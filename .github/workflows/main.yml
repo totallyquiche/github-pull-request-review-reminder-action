@@ -1,5 +1,4 @@
 name: 'Pull Request Review Reminder Action'
-description: 'Notify reviewers of Pull Requests awaiting their review.'
 on: workflow_dispatch
 jobs:
   build:
