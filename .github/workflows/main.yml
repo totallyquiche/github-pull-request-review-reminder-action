@@ -3,3 +3,6 @@ description: 'Notify reviewers of Pull Requests awaiting their review.'
 runs:
   using: 'node18'
   main: 'index.js'
+on:
+  schedule:
+    - cron:  '* * * * *'
