@@ -1,5 +1,8 @@
 name: 'Pull Request Review Reminder'
 description: 'Reminder reviewers pending Pull Request review requests.'
+branding:
+  icon: 'bell'
+  color: 'yellow'
 inputs:
   webhook-url:
     description: 'The URL to post the reminder to.'
