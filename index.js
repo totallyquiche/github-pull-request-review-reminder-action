@@ -1,3 +1,4 @@
+const core = require('@actions/core');
 const { Octokit } = require("@octokit/rest");
 
 const { GITHUB_TOKEN, GITHUB_OWNER, GITHUB_REPOSITORY } = process.env;
@@ -39,13 +40,21 @@ const getTimelineActivity = async (issueNumber) => {
       .filter(timelineActivity => timelineActivity.event === 'review_requested');
 
     REQUESTED_REVIEWERS.forEach(requestedReviewer => {
-      const REQUESTED_REVIEWER_LOGIN = requestedReviewer.login;;
+      const REQUESTED_REVIEWER_LOGIN = requestedReviewer.login;
       const TIMESTAMP = TIMELINE_ACTIVITY
         .filter(timelineActivity => {
           return timelineActivity.requested_reviewer.login === REQUESTED_REVIEWER_LOGIN;
         })[0].created_at
 
-      // TODO - send a notification for login/timestamp
+      const NOTIFICATION = {
+        login: REQUESTED_REVIEWER_LOGIN,
+        timestamp: TIMESTAMP,
+      };
+
+      fetch(core.getInput('webhook-url'), {
+        method: 'POST',
+        body: JSON.stringify(NOTIFICATION),
+      });
     });
   }
 })();

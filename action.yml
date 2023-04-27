@@ -1,0 +1,9 @@
+name: 'Pull Request Review Reminder'
+description: 'Reminder reviewers pending Pull Request review requests.'
+inputs:
+  webhook-url:
+    description: 'The URL to post the reminder to.'
+    required: true
+runs:
+  using: 'node16'
+  main: 'index.js'
