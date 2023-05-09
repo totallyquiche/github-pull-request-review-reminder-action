@@ -15,6 +15,11 @@ $github_repository_name_parts = explode('/', GITHUB_REPOSITORY);
 define('GITHUB_OWNER_NAME', $github_repository_name_parts[0]);
 define('GITHUB_REPOSITORY_NAME', $github_repository_name_parts[1]);
 
+echo GITHUB_ACCESS_TOKEN;
+echo GITHUB_REPOSITORY;
+echo GITHUB_OWNER_NAME;
+echo GITHUB_REPOSITORY_NAME;
+
 function getGitHubClient(string $github_access_token) : Client {
     $client = new Client();
     $client->authenticate($github_access_token, null, AuthMethod::ACCESS_TOKEN);
