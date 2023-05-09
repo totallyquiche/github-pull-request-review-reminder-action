@@ -8,8 +8,12 @@ use \Github\AuthMethod;
 require('vendor/autoload.php');
 
 define('GITHUB_ACCESS_TOKEN', getenv('GITHUB_ACCESS_TOKEN'));
-define('GITHUB_OWNER_NAME', getenv('GITHUB_OWNER_NAME'));
-define('GITHUB_REPOSITORY_NAME', getenv('GITHUB_REPOSITORY_NAME'));
+define('GITHUB_REPOSITORY', getenv('GITHUB_REPOSITORY'));
+
+$github_repository_name_parts = explode('/', GITHUB_REPOSITORY);
+
+define('GITHUB_OWNER_NAME', $github_repository_name_parts[0]);
+define('GITHUB_REPOSITORY_NAME', $github_repository_name_parts[1]);
 
 function getGitHubClient(string $github_access_token) : Client {
     $client = new Client();

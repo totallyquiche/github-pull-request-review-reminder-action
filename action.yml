@@ -4,16 +4,12 @@ inputs:
   github-access-token:
     description: 'A GitHub Personal Access Token'
     required: true
-  github-owner-name:
-    description: 'The name of the GitHub Repository owner'
-    required: true
-  github-repository-name:
-    description: 'The name of the GitHub Repository'
+  github-repository:
+    description: 'The name of the GitHub Repository (e.g. "owner/repo-name")'
     required: true
 runs:
   using: 'docker'
   image: 'Dockerfile'
   env:
     - GITHUB_ACCESS_TOKEN=${{ inputs.github-access-token }}
-    - GITHUB_OWNER_NAME=${{ inputs.github-owner-name }}
-    - GITHUB_REPOSITORY_NAME=${{ inputs.github-repository-name }}
+    - GITHUB_REPOSITORY=${{ inputs.github-repository }}
