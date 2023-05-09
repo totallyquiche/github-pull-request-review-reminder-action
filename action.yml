@@ -1,8 +1,8 @@
-name: 'GitHub Requested Reviewer Alerts'
+name: 'Pull Request Review Reminders'
 description: 'Remind GitHub users of Pull Requests pending their reviews.'
 inputs:
   GITHUB_ACCESS_TOKEN:
-    description: 'A GitHub Personal Access Token'
+    description: 'An Access Token for use with the GitHub API.'
     required: true
 runs:
   using: 'docker'
