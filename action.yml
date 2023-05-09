@@ -1,12 +1,9 @@
-name: 'Pull Request Review Reminder'
-description: 'Reminder reviewers pending Pull Request review requests.'
-branding:
-  icon: 'bell'
-  color: 'yellow'
-inputs:
-  webhook-url:
-    description: 'The URL to post the reminder to.'
-    required: true
+name: 'GitHub Requested Reviewer Alerts'
+description: 'Notify GitHub users of Pull Requests pending their reviews.'
 runs:
-  using: 'node16'
-  main: 'index.js'
+  using: 'docker'
+  image: 'Dockerfile'
+  env:
+    - GITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }}
+    - GITHUB_OWNER_NAME=${{ GITHUB_OWNER_NAME }}
+    - GITHUB_REPOSITORY_NAME=${{ GITHUB_REPOSITORY_NAME }}
