@@ -7,7 +7,7 @@ use \Github\AuthMethod;
 
 require('vendor/autoload.php');
 
-define('GITHUB_ACCESS_TOKEN', getenv('GITHUB_ACCESS_TOKEN'));
+define('GITHUB_ACCESS_TOKEN', getenv('INPUT_GITHUB_ACCESS_TOKEN'));
 define('GITHUB_REPOSITORY', getenv('GITHUB_REPOSITORY'));
 
 $github_repository_name_parts = explode('/', GITHUB_REPOSITORY);

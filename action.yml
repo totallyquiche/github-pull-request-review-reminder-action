@@ -1,5 +1,9 @@
 name: 'GitHub Requested Reviewer Alerts'
 description: 'Notify GitHub users of Pull Requests pending their reviews.'
+inputs:
+  github-access-token:
+    description: 'A GitHub Personal Access Token'
+    required: true
 runs:
   using: 'docker'
   image: 'Dockerfile'
