@@ -7,6 +7,9 @@ use \Github\AuthMethod;
 
 require('/vendor/autoload.php');
 
+/**
+ * Instantiate and authenticate a GitHub API client.
+ */
 function getGitHubClient(string $github_access_token) : Client {
     $client = new Client();
     $client->authenticate($github_access_token, null, AuthMethod::ACCESS_TOKEN);
@@ -14,6 +17,9 @@ function getGitHubClient(string $github_access_token) : Client {
     return $client;
 }
 
+/**
+ * Fetch all open Pull Requests via the GitHub API.
+ */
 function getPullRequests(Client $client,
                          string $github_owner_name,
                          string $github_repository_name) : array {
@@ -23,10 +29,13 @@ function getPullRequests(Client $client,
                         array('state' => 'open'));
 }
 
+/**
+ * Fetch all Review Requests for a given Pull Request number.
+ */
 function getReviewRequestLogins(Client $client,
-                           string $github_owner_name,
-                           string $github_repository_name,
-                           int $pull_request_number) : array {
+                                string $github_owner_name,
+                                string $github_repository_name,
+                                int $pull_request_number) : array {
     $review_requests = $client->api('pull_request')
                               ->reviewRequests()
                               ->all($github_owner_name,
@@ -46,6 +55,11 @@ function getReviewRequestLogins(Client $client,
     return $review_request_logins;
 }
 
+/**
+ * Fetch all Review Request Timeline Activities for a given Pull Request Number.
+ * Only returns Activities to which one of the current Requested Reviewers on
+ * the Pull Request is related.
+ */
 function getTimelineActivities(Client $client,
                                string $github_owner_name,
                                string $github_repository_name,
@@ -77,10 +91,13 @@ function getTimelineActivities(Client $client,
     return $activities;
 }
 
-function getNotifications(Client $client,
-                          $github_owner_name,
-                          $github_repository_name) : array {
-    $notifications = [];
+/**
+ * Get an array of data intended for use in sending the PR review reminder.
+ */
+function getReminderData(Client $client,
+                         string $github_owner_name,
+                         string $github_repository_name) : array {
+    $reminders = [];
     $pull_requests = getPullRequests($client,
                                      $github_owner_name,
                                      $github_repository_name);
@@ -89,15 +106,15 @@ function getNotifications(Client $client,
         $pull_request_number = $pull_request['number'];
 
         $review_requests = getReviewRequestLogins($client,
-                                             $github_owner_name,
-                                             $github_repository_name,
-                                             $pull_request_number);
+                                                  $github_owner_name,
+                                                  $github_repository_name,
+                                                  $pull_request_number);
 
         if (empty($review_requests)) {
             continue;
         }
 
-        $notifications[$pull_request_number] = [];
+        $reminders[$pull_request_number] = [];
 
         $activities = getTimelineActivities($client,
                                             $github_owner_name,
@@ -105,11 +122,11 @@ function getNotifications(Client $client,
                                             $pull_request_number);
 
         foreach ($activities as $activity) {
-            $notifications[$pull_request_number]['link'] = $pull_request['html_url'];
-            $notifications[$pull_request_number]['login'] = $activity['requested_reviewer']['login'];
-            $notifications[$pull_request_number]['created_at'] = $activity['created_at'];
+            $reminders[$pull_request_number]['link'] = $pull_request['html_url'];
+            $reminders[$pull_request_number]['login'] = $activity['requested_reviewer']['login'];
+            $reminders[$pull_request_number]['created_at'] = $activity['created_at'];
         }
     }
 
-    return $notifications;
+    return $reminders;
 }

@@ -1,5 +1,5 @@
 name: 'GitHub Requested Reviewer Alerts'
-description: 'Notify GitHub users of Pull Requests pending their reviews.'
+description: 'Remind GitHub users of Pull Requests pending their reviews.'
 inputs:
   GITHUB_ACCESS_TOKEN:
     description: 'A GitHub Personal Access Token'

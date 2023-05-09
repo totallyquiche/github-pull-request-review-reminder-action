@@ -12,9 +12,8 @@ $github_repository_name_parts = explode('/', GITHUB_REPOSITORY);
 define('GITHUB_OWNER_NAME', $github_repository_name_parts[0]);
 define('GITHUB_REPOSITORY_NAME', $github_repository_name_parts[1]);
 
-$notifications = getNotifications(getGitHubClient(GITHUB_ACCESS_TOKEN),
-                                  GITHUB_OWNER_NAME,
-                                  GITHUB_REPOSITORY_NAME);
+$reminder_data = getReminderData(getGitHubClient(GITHUB_ACCESS_TOKEN),
+                                 GITHUB_OWNER_NAME,
+                                 GITHUB_REPOSITORY_NAME);
 
-// TODO: Send notifications via email/Slack message
-var_dump($notifications);
+// TODO: Send reminders via email/Slack message
