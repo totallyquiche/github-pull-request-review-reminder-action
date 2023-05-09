@@ -1,9 +1,19 @@
 name: 'GitHub Requested Reviewer Alerts'
 description: 'Notify GitHub users of Pull Requests pending their reviews.'
+inputs:
+  github-access-token:
+    description: 'A GitHub Personal Access Token'
+    required: true
+  github-owner-name:
+    description: 'The name of the GitHub Repository owner'
+    required: true
+  github-repository-name:
+    description: 'The name of the GitHub Repository'
+    required: true
 runs:
   using: 'docker'
   image: 'Dockerfile'
   env:
-    - GITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }}
-    - GITHUB_OWNER_NAME=${{ GITHUB_OWNER_NAME }}
-    - GITHUB_REPOSITORY_NAME=${{ GITHUB_REPOSITORY_NAME }}
+    - GITHUB_ACCESS_TOKEN=${{ inputs.github-access-token }}
+    - GITHUB_OWNER_NAME=${{ inputs.github-owner-name }}
+    - GITHUB_REPOSITORY_NAME=${{ inputs.github-repository-name }}
