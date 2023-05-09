@@ -5,7 +5,7 @@ declare(strict_types=1);
 use \Github\Client;
 use \Github\AuthMethod;
 
-require('vendor/autoload.php');
+require('/vendor/autoload.php');
 
 define('GITHUB_ACCESS_TOKEN', getenv('INPUT_GITHUB_ACCESS_TOKEN'));
 define('GITHUB_REPOSITORY', getenv('GITHUB_REPOSITORY'));
@@ -122,7 +122,7 @@ function getNotifications(Client $client,
     return $notifications;
 }
 
-$notifications = getNotifications(getGitHubClient(GITHUB_access_TOKEN),
+$notifications = getNotifications(getGitHubClient(GITHUB_ACCESS_TOKEN),
                                   GITHUB_OWNER_NAME,
                                   GITHUB_REPOSITORY_NAME);
 
