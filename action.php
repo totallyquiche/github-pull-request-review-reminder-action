@@ -17,3 +17,4 @@ $notifications = getNotifications(getGitHubClient(GITHUB_ACCESS_TOKEN),
                                   GITHUB_REPOSITORY_NAME);
 
 // TODO: Send notifications via email/Slack message
+var_dump($notifications);
