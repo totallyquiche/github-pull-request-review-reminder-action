@@ -11,5 +11,5 @@ runs:
   using: 'docker'
   image: 'Dockerfile'
   env:
-    - GITHUB_ACCESS_TOKEN=${{ inputs.github-access-token }}
-    - GITHUB_REPOSITORY=${{ inputs.github-repository }}
+    GITHUB_ACCESS_TOKEN: ${{ inputs.github-access-token }}
+    GITHUB_REPOSITORY: ${{ inputs.github-repository }}
