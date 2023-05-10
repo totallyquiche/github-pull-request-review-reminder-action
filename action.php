@@ -8,7 +8,7 @@ define('GITHUB_ACCESS_TOKEN', getenv('INPUT_GITHUB_ACCESS_TOKEN'));
 define('GITHUB_REPOSITORY', getenv('GITHUB_REPOSITORY'));
 define('GITHUB_OWNER_NAME', explode('/', GITHUB_REPOSITORY)[0]);
 define('GITHUB_REPOSITORY_NAME', explode('/', GITHUB_REPOSITORY)[1]);
-define('MINIMUM_ELAPSED_HOURS', getenv('INPUT_MINIMUM_ELAPSED_HOURS'));
+define('MINIMUM_ELAPSED_HOURS', intval(getenv('INPUT_MINIMUM_ELAPSED_HOURS')));
 
 $reminder_data = getReminderData(getGitHubClient(GITHUB_ACCESS_TOKEN),
                                  GITHUB_OWNER_NAME,
