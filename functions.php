@@ -63,7 +63,8 @@ function getReviewRequestLogins(Client $client,
 function getTimelineActivities(Client $client,
                                string $github_owner_name,
                                string $github_repository_name,
-                               int $pull_request_number) : array {
+                               int $pull_request_number,
+                               int $minimum_elapsed_hours) : array {
     $activities = $client->api('issue')
                   ->timeline()
                   ->all($github_owner_name,
@@ -83,8 +84,16 @@ function getTimelineActivities(Client $client,
     $activities = array_filter(
         $activities,
         function ($activity) use (&$requested_reviewer_logins) {
-            return !in_array($activity['requested_reviewer']['login'],
-                             $requested_reviewer_logins);
+            $start_date_time = new DateTime('-' . $minimum_elapsed_hours . ' hours');
+            $activity_created_at = new DateTime($activity['created_at']);
+
+            $include_activity = $activity_created_at->getTimestamp() > $start_date_time->getTimestamp();
+            $include_activity = !in_array($activity['requested_reviewer']['login'],
+                                          $requested_reviewer_logins) &&
+                                $include_activity;
+
+            return $include_activity;
+
         }
     );
 
@@ -96,7 +105,8 @@ function getTimelineActivities(Client $client,
  */
 function getReminderData(Client $client,
                          string $github_owner_name,
-                         string $github_repository_name) : array {
+                         string $github_repository_name,
+                         int    $minimum_elapsed_hours) : array {
     $reminders = [];
     $pull_requests = getPullRequests($client,
                                      $github_owner_name,
@@ -119,7 +129,8 @@ function getReminderData(Client $client,
         $activities = getTimelineActivities($client,
                                             $github_owner_name,
                                             $github_repository_name,
-                                            $pull_request_number);
+                                            $pull_request_number,
+                                            $minimum_elapsed_hours);
 
         foreach ($activities as $activity) {
             $reminders[$pull_request_number]['link'] = $pull_request['html_url'];
