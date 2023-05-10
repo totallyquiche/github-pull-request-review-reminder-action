@@ -83,7 +83,7 @@ function getTimelineActivities(Client $client,
 
     $activities = array_filter(
         $activities,
-        function ($activity) use (&$requested_reviewer_logins) {
+        function ($activity) use ($minimum_elapsed_hours, &$requested_reviewer_logins) {
             $start_date_time = new DateTime('-' . $minimum_elapsed_hours . ' hours');
             $activity_created_at = new DateTime($activity['created_at']);
 
@@ -93,7 +93,6 @@ function getTimelineActivities(Client $client,
                                 $include_activity;
 
             return $include_activity;
-
         }
     );
 
