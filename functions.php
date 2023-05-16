@@ -155,6 +155,7 @@ function sendEmails(array $notification_data,
     $message = (new \Swift_Message())
         ->setSubject('Test subject')
         ->setTo(['brian.dady@wellspring.com' => 'Brian Dady'])
+        ->setFrom(['sophia.jenkins@mg.wellspring.engineering' => 'Sophia Jenkins'])
         ->setBody('Test');
 
     return (new Swift_Mailer($smtp_transport))->send($message);
