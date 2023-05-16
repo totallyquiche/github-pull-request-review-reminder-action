@@ -4,10 +4,16 @@ inputs:
   GITHUB_ACCESS_TOKEN:
     description: 'An Access Token for use with the GitHub API.'
     required: true
-  MINIMUM_ELAPSED_HOURS:
-    description: 'The minimum number of hours elapsed since a review was requested at which reminders should be sent.'
+  HOURS_UNTIL_REMINDER:
+    description: 'The minimum number of hours after which reminders should be sent.'
     required: true
     default: 4
+  SMTP_USERNAME:
+    description: 'Username for SMTP email service.'
+    required: true
+  SMTP_PASSWORD:
+    description: 'Password for the SMTP email service.'
+    required: true
 runs:
   using: 'docker'
   image: 'Dockerfile'

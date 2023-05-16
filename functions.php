@@ -64,7 +64,7 @@ function getTimelineActivities(Client $client,
                                string $github_owner_name,
                                string $github_repository_name,
                                int $pull_request_number,
-                               int $minimum_elapsed_hours) : array {
+                               int $hours_until_reminder) : array {
     $activities = $client->api('issue')
                   ->timeline()
                   ->all($github_owner_name,
@@ -83,8 +83,8 @@ function getTimelineActivities(Client $client,
 
     $activities = array_filter(
         $activities,
-        function ($activity) use ($minimum_elapsed_hours, &$requested_reviewer_logins) {
-            $start_date_time = new DateTime('-' . $minimum_elapsed_hours . ' hours');
+        function ($activity) use ($hours_until_reminder, &$requested_reviewer_logins) {
+            $start_date_time = new DateTime('-' . $hours_until_reminder . ' hours');
             $activity_created_at = new DateTime($activity['created_at']);
 
             $include_activity = $activity_created_at->getTimestamp() > $start_date_time->getTimestamp();
@@ -105,7 +105,7 @@ function getTimelineActivities(Client $client,
 function getReminderData(Client $client,
                          string $github_owner_name,
                          string $github_repository_name,
-                         int    $minimum_elapsed_hours) : array {
+                         int    $hours_until_reminder) : array {
     $reminders = [];
     $pull_requests = getPullRequests($client,
                                      $github_owner_name,
@@ -129,7 +129,7 @@ function getReminderData(Client $client,
                                             $github_owner_name,
                                             $github_repository_name,
                                             $pull_request_number,
-                                            $minimum_elapsed_hours);
+                                            $hours_until_reminder);
 
         foreach ($activities as $activity) {
             $reminders[$pull_request_number]['link'] = $pull_request['html_url'];
@@ -139,4 +139,24 @@ function getReminderData(Client $client,
     }
 
     return $reminders;
+}
+
+/**
+ * Send emails via SMTP.
+ */
+function sendEmails(array $notification_data,
+                    string $smtp_username,
+                    string $smtp_password) : int
+{
+    $smtp_transport = new Swift_SmtpTransport('smtp.mailgun.org', 587);
+    $smtp_transport->setUsername($smtp_username);
+    $smtp_transport->setPassword($smtp_password);
+
+    $message = (new \Swift_Message())
+        ->setSubject('Test subject')
+        ->setTo('brian.dady@wellspring.com')
+        ->setFrom(['sophia.jenkins@mg.wellspring.engineering' => 'Sophia Jenkins'])
+        ->setBody('Test');
+
+    return (new Swift_Mailer($smtp_transport))->send($message);
 }
