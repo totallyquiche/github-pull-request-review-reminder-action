@@ -12,11 +12,11 @@ define('HOURS_UNTIL_REMINDER', intval(getenv('INPUT_HOURS_UNTIL_REMINDER')));
 define('SMTP_USERNAME', getenv('INPUT_SMTP_USERNAME'));
 define('SMTP_PASSWORD', getenv('INPUT_SMTP_PASSWORD'));
 
-$reminder_data = getReminderData(getGitHubClient(GITHUB_ACCESS_TOKEN),
-                                 GITHUB_OWNER_NAME,
-                                 GITHUB_REPOSITORY_NAME,
-                                 HOURS_UNTIL_REMINDER);
+$reminders = getReminders(getGitHubClient(GITHUB_ACCESS_TOKEN),
+                          GITHUB_OWNER_NAME,
+                          GITHUB_REPOSITORY_NAME,
+                          HOURS_UNTIL_REMINDER);
 
-sendEmails($reminder_data, SMTP_USERNAME, SMTP_PASSWORD);
+sendEmails($reminders, SMTP_USERNAME, SMTP_PASSWORD);
 
 // TODO: Send reminders via Slack message

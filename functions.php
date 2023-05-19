@@ -102,10 +102,10 @@ function getTimelineActivities(Client $client,
 /**
  * Get an array of data intended for use in sending the PR review reminder.
  */
-function getReminderData(Client $client,
-                         string $github_owner_name,
-                         string $github_repository_name,
-                         int    $hours_until_reminder) : array {
+function getReminders(Client $client,
+                      string $github_owner_name,
+                      string $github_repository_name,
+                      int    $hours_until_reminder) : array {
     $reminders = [];
     $pull_requests = getPullRequests($client,
                                      $github_owner_name,
@@ -114,13 +114,19 @@ function getReminderData(Client $client,
     foreach ($pull_requests as $pull_request) {
         $pull_request_number = $pull_request['number'];
 
-        $review_requests = getReviewRequestLogins($client,
-                                                  $github_owner_name,
-                                                  $github_repository_name,
-                                                  $pull_request_number);
+        $review_request_logins = getReviewRequestLogins($client,
+                                                        $github_owner_name,
+                                                        $github_repository_name,
+                                                        $pull_request_number);
 
         if (empty($review_requests)) {
             continue;
+        }
+
+        foreach ($review_request_logins as $review_request_login) {
+            if (!isset($reminders[$review_request_login])) {
+                $reminders[$review_request_login] = [];
+            }
         }
 
         $reminders[$pull_request_number] = [];
@@ -132,9 +138,12 @@ function getReminderData(Client $client,
                                             $hours_until_reminder);
 
         foreach ($activities as $activity) {
-            $reminders[$pull_request_number]['link'] = $pull_request['html_url'];
-            $reminders[$pull_request_number]['login'] = $activity['requested_reviewer']['login'];
-            $reminders[$pull_request_number]['created_at'] = $activity['created_at'];
+            $login = $activity['requested_reviewer']['login'];
+
+            $reminders[$login][] = [
+                'link'                => $pull_request['html_url'],
+                'review_requested_at' => $activity['created_at'],
+            ];
         }
     }
 
@@ -144,19 +153,39 @@ function getReminderData(Client $client,
 /**
  * Send emails via SMTP.
  */
-function sendEmails(array $notification_data,
+function sendEmails(array $reminder_data,
                     string $smtp_username,
-                    string $smtp_password) : int
+                    string $smtp_password) : void
 {
     $smtp_transport = new Swift_SmtpTransport('smtp.mailgun.org', 587);
     $smtp_transport->setUsername($smtp_username);
     $smtp_transport->setPassword($smtp_password);
 
-    $message = (new \Swift_Message())
-        ->setSubject('Test subject')
-        ->setTo(['brian.dady@wellspring.com' => 'Brian Dady'])
-        ->setFrom(['sophia.jenkins@mg.wellspring.engineering' => 'Sophia Jenkins'])
-        ->setBody('Test');
+    $mailer = new Swift_Mailer($smtp_transport);
 
-    return (new Swift_Mailer($smtp_transport))->send($message);
+    foreach ($reminder_data as $login => $reminders) {
+        $pull_request_links_html = '<ul>';
+
+        foreach ($reminders as $reminder) {
+            $link_text = $reminder['link'] . '(' . $reminder['review_requested_at'] . ')';
+            $pull_request_links_html .= '<li>' . $link_text . '</li>';
+        }
+
+        $pull_request_links_html .= '</ul>';
+
+        $message_body = <<<HTML
+$login, please take some time to revisit the following Pull Requests, which are
+awaiting your review:
+<br/><br/>
+$pull_request_links_html
+HTML;
+
+        $message = (new \Swift_Message())
+            ->setSubject('Pull Requests awaiting your review')
+            ->setTo(['brian.dady@wellspring.com' => 'Brian Dady'])
+            ->setFrom(['sophia.jenkins@mg.wellspring.engineering' => 'Sophia Jenkins'])
+            ->setBody($message_body);
+
+        $mailer->send($message);
+    }
 }
