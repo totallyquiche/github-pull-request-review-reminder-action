@@ -119,7 +119,7 @@ function getReminders(Client $client,
                                                         $github_repository_name,
                                                         $pull_request_number);
 
-        if (empty($review_requests)) {
+        if (empty($review_request_logins)) {
             continue;
         }
 
@@ -136,8 +136,6 @@ function getReminders(Client $client,
                                             $github_repository_name,
                                             $pull_request_number,
                                             $hours_until_reminder);
-
-                                            var_dump($activities);
 
         foreach ($activities as $activity) {
             $login = $activity['requested_reviewer']['login'];
