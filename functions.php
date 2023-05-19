@@ -157,6 +157,8 @@ function sendEmails(array $reminder_data,
                     string $smtp_username,
                     string $smtp_password) : void
 {
+    var_dump($reminder_data);
+
     $smtp_transport = new Swift_SmtpTransport('smtp.mailgun.org', 587);
     $smtp_transport->setUsername($smtp_username);
     $smtp_transport->setPassword($smtp_password);
@@ -179,6 +181,8 @@ awaiting your review:
 <br/><br/>
 $pull_request_links_html
 HTML;
+
+        var_dump($message_body);
 
         $message = (new \Swift_Message())
             ->setSubject('Pull Requests awaiting your review')
