@@ -154,7 +154,7 @@ function getRemindersData(Client $client,
 function getEmailAddressFromGitHubLogin(string $login) : string
 {
     $user_data = json_decode(
-        file_get_contents('user-data.json'),
+        file_get_contents('/user-data.json'),
         true
     );
 
