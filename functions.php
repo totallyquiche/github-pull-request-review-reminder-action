@@ -184,7 +184,7 @@ HTML;
             ->setSubject('Pull Requests awaiting your review')
             ->setTo(['brian.dady@wellspring.com' => 'Brian Dady'])
             ->setFrom(['sophia.jenkins@mg.wellspring.engineering' => 'Sophia Jenkins'])
-            ->setBody($message_body);
+            ->setBody($message_body, 'text/html');
 
         $mailer->send($message);
     }
