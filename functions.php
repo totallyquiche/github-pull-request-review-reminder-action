@@ -102,10 +102,10 @@ function getTimelineActivities(Client $client,
 /**
  * Get an array of data intended for use in sending the PR review reminder.
  */
-function getReminders(Client $client,
-                      string $github_owner_name,
-                      string $github_repository_name,
-                      int    $hours_until_reminder) : array {
+function getReminderData(Client $client,
+                         string $github_owner_name,
+                         string $github_repository_name,
+                         int    $hours_until_reminder) : array {
     $reminders = [];
     $pull_requests = getPullRequests($client,
                                      $github_owner_name,
@@ -149,6 +149,25 @@ function getReminders(Client $client,
 }
 
 /**
+ * Find the email address associated with the given GitHub login.
+ */
+function getEmailAddressFromGitHubLogin(string $login) : string
+{
+    $user_data = json_decode(
+        file_get_contents('user-data.json'),
+        true
+    );
+
+    foreach ($user_data['users'] as $user) {
+        if ($user['githubLogin'] === $login) {
+            return $user['emailAddress'];
+        }
+    }
+
+    return json_decode($user_data, true)[$login]['emailAddress'];
+}
+
+/**
  * Send emails via SMTP.
  */
 function sendEmails(array $reminder_data,
@@ -180,9 +199,11 @@ awaiting your review:
 $pull_request_links_html
 HTML;
 
+        $to_address = getEmailAddressFromGitHubLogin($login);
+
         $message = (new \Swift_Message())
             ->setSubject('Pull Requests awaiting your review')
-            ->setTo(['brian.dady@wellspring.com' => 'Brian Dady'])
+            ->setTo([$to_address => $login])
             ->setFrom(['sophia.jenkins@mg.wellspring.engineering' => 'Sophia Jenkins'])
             ->setBody($message_body, 'text/html');
 
