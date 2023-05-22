@@ -129,8 +129,6 @@ function getReminders(Client $client,
             }
         }
 
-        $reminders[$pull_request_number] = [];
-
         $activities = getTimelineActivities($client,
                                             $github_owner_name,
                                             $github_repository_name,
