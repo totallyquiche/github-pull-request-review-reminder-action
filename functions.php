@@ -102,10 +102,10 @@ function getTimelineActivities(Client $client,
 /**
  * Get an array of data intended for use in sending the PR review reminder.
  */
-function getReminderData(Client $client,
-                         string $github_owner_name,
-                         string $github_repository_name,
-                         int    $hours_until_reminder) : array {
+function getRemindersData(Client $client,
+                          string $github_owner_name,
+                          string $github_repository_name,
+                          int    $hours_until_reminder) : array {
     $reminders = [];
     $pull_requests = getPullRequests($client,
                                      $github_owner_name,
