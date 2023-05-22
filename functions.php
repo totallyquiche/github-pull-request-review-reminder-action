@@ -167,8 +167,9 @@ function sendEmails(array $reminder_data,
         $pull_request_links_html = '<ul>';
 
         foreach ($reminders as $reminder) {
-            $requested_date_time = (new DateTime($reminder['review_requested_at']))->format('MMM dd @ HH:mm A');
-            $link_text = $reminder['link'] . ' (Requested on ' . $requested_date_time . ')';
+            $requested_date_time = new DateTime($reminder['review_requested_at']);
+            $timestamp = $requested_date_time->format('F jS @ h:ma'); // Ex. May 22nd @ 9:56am
+            $link_text = $reminder['link'] . ' (Requested on ' . $timestamp . ')';
             $pull_request_links_html .= '<li>' . $link_text . '</li>';
         }
 
