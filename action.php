@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-date_default_timezone_set('America/Chicago');
-
 require('/functions.php');
 
 define('GITHUB_ACCESS_TOKEN', getenv('INPUT_GITHUB_ACCESS_TOKEN'));

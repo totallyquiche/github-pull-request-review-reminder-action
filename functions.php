@@ -174,6 +174,8 @@ function sendEmails(array $reminder_data,
                     string $smtp_username,
                     string $smtp_password) : void
 {
+    date_default_timezone_set('America/Chicago');
+
     $smtp_transport = new Swift_SmtpTransport('smtp.mailgun.org', 587);
     $smtp_transport->setUsername($smtp_username);
     $smtp_transport->setPassword($smtp_password);
