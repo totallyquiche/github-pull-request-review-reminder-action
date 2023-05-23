@@ -185,7 +185,7 @@ function sendEmails(array $reminder_data,
 
         foreach ($reminders as $reminder) {
             $requested_date_time = new DateTime($reminder['review_requested_at']);
-            $timestamp = $requested_date_time->format('F jS \a\t h:ma'); // Ex. May 22nd at 9:56am
+            $timestamp = $requested_date_time->format('F jS \a\t h:ma e'); // Ex. May 22nd at 9:56am CST
             $link_text = $reminder['link'] . ' (review requested on ' . $timestamp . ')';
             $pull_request_links_html .= '<li>' . $link_text . '</li>';
         }
