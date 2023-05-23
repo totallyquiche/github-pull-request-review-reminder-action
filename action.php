@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 require('/functions.php');
 
+date_default_timezone_set('America/Chicago');
+
 define('GITHUB_ACCESS_TOKEN', getenv('INPUT_GITHUB_ACCESS_TOKEN'));
 define('GITHUB_REPOSITORY', getenv('GITHUB_REPOSITORY'));
 define('GITHUB_OWNER_NAME', explode('/', GITHUB_REPOSITORY)[0]);
