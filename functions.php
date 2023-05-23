@@ -185,16 +185,16 @@ function sendEmails(array $reminder_data,
 
         foreach ($reminders as $reminder) {
             $requested_date_time = new DateTime($reminder['review_requested_at']);
-            $timestamp = $requested_date_time->format('F jS @ h:ma'); // Ex. May 22nd @ 9:56am
-            $link_text = $reminder['link'] . ' (Requested on ' . $timestamp . ')';
+            $timestamp = $requested_date_time->format('F jS at h:ma'); // Ex. May 22nd at 9:56am
+            $link_text = $reminder['link'] . ' (review requested on ' . $timestamp . ')';
             $pull_request_links_html .= '<li>' . $link_text . '</li>';
         }
 
         $pull_request_links_html .= '</ul>';
 
         $message_body = <<<HTML
-$login, please take some time to revisit the following Pull Requests, which are
-awaiting your review:
+Please take some time to revisit the following Pull Requests, which are awaiting
+your review:
 <br/><br/>
 $pull_request_links_html
 HTML;
