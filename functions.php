@@ -174,8 +174,6 @@ function sendEmails(array $reminder_data,
                     string $smtp_username,
                     string $smtp_password) : void
 {
-    date_default_timezone_set('America/Chicago');
-
     $smtp_transport = new Swift_SmtpTransport('smtp.mailgun.org', 587);
     $smtp_transport->setUsername($smtp_username);
     $smtp_transport->setPassword($smtp_password);
@@ -184,9 +182,10 @@ function sendEmails(array $reminder_data,
 
     foreach ($reminder_data as $login => $reminders) {
         $pull_request_links_html = '<ul>';
+        $timezone = new DateTimeZone('America/Chicago');
 
         foreach ($reminders as $reminder) {
-            $requested_date_time = new DateTime($reminder['review_requested_at']);
+            $requested_date_time = new DateTime($reminder['review_requested_at'], $timezone);
             $timestamp = $requested_date_time->format('F jS \a\t h:ma T'); // Ex. May 22nd at 9:56am CST
             $link_text = $reminder['link'] . ' (review requested on ' . $timestamp . ')';
             $pull_request_links_html .= '<li>' . $link_text . '</li>';
