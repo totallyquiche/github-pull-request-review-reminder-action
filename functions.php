@@ -185,8 +185,9 @@ function sendEmails(array $reminder_data,
         $timezone = new DateTimeZone('America/Chicago');
 
         foreach ($reminders as $reminder) {
-            $requested_date_time = new DateTime($reminder['review_requested_at'], $timezone);
-            $timestamp = $requested_date_time->format('F jS \a\t h:ma T'); // Ex. May 22nd at 9:56am CST
+            $timestamp = (new DateTime($reminder['review_requested_at']))
+                ->setTimezone(new DateTimeZone('America/Chicago'))
+                ->format('F jS \a\t h:ma T'); // Ex. May 22nd at 9:56am CST
             $link_text = $reminder['link'] . ' (review requested on ' . $timestamp . ')';
             $pull_request_links_html .= '<li>' . $link_text . '</li>';
         }
