@@ -139,7 +139,7 @@ function getRemindersData(Client $client,
             $login = $activity['requested_reviewer']['login'];
 
             $reminders[$login][] = [
-                'link'                => $pull_request['html_url'],
+                'link' => $pull_request['html_url'],
                 'review_requested_at' => $activity['created_at'],
             ];
         }
@@ -150,6 +150,8 @@ function getRemindersData(Client $client,
 
 /**
  * Find the email address associated with the given GitHub login.
+ *
+ * @throws Exception
  */
 function getEmailAddressFromGitHubLogin(string $login) : string
 {
@@ -164,7 +166,7 @@ function getEmailAddressFromGitHubLogin(string $login) : string
         }
     }
 
-    return json_decode($user_data, true)[$login]['emailAddress'];
+    throw new Exception('No user data found for GitHub login: ' . $login);
 }
 
 /**
@@ -201,14 +203,20 @@ your review:
 $pull_request_links_html
 HTML;
 
-        $to_address = getEmailAddressFromGitHubLogin($login);
+        // If anything goes wrong, just print out the Exception message so we
+        // can try to send the next email
+        try {
+            $to_address = getEmailAddressFromGitHubLogin($login);
 
-        $message = (new \Swift_Message())
-            ->setSubject('Pull Requests awaiting your review')
-            ->setTo([$to_address => $login])
-            ->setFrom(['sophia.jenkins@mg.wellspring.engineering' => 'Sophia Jenkins'])
-            ->setBody($message_body, 'text/html');
+            $message = (new \Swift_Message())
+                ->setSubject('Pull Requests awaiting your review')
+                ->setTo([$to_address => $login])
+                ->setFrom(['sophia.jenkins@mg.wellspring.engineering' => 'Sophia Jenkins'])
+                ->setBody($message_body, 'text/html');
 
-        $mailer->send($message);
+            $mailer->send($message);
+        } catch (Exception $exception) {
+            echo $exception->getMessage();
+        }
     }
 }
