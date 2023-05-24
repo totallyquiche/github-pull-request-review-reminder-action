@@ -161,7 +161,7 @@ function getEmailAddressFromGitHubLogin(string $login) : string
     );
 
     foreach ($user_data['users'] as $user) {
-        if ($user['githubLogin'] === $login) {
+        if ($user['gitHubLogin'] === $login) {
             return $user['emailAddress'];
         }
     }
